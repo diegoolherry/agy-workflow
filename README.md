@@ -97,19 +97,23 @@ DiegoAI-Stack/
 │   ├── skills/           → skills core que van a todos los proyectos
 │   │   ├── project-init/
 │   │   ├── architecture-builder/
-│   │   ├── task-spec/
 │   │   ├── ia-logger/
 │   │   ├── diagnose/
 │   │   ├── leader/
 │   │   ├── code-review/
 │   │   └── security-audit/
 │   └── agents/           → subagentes especializados del flujo SDD
-│       ├── implementer-agent.json
-│       ├── researcher-agent.json
-│       ├── reviewer-agent.json
-│       └── spec_author-agent.json
+│       ├── implementer/
+│       │   └── agent.json
+│       ├── researcher/
+│       │   └── agent.json
+│       ├── reviewer/
+│       │   └── agent.json
+│       └── spec_author/
+│           └── agent.json
 └── skills-extra/         → skills opcionales por temática
     ├── frontend-desing/
+    ├── task-spec/
     ├── threejs-skills/
     ├── to-prd/
     ├── ui-ux-pro-max-skill/
@@ -191,30 +195,6 @@ Genera uno o varios archivos según la complejidad del proyecto:
 
 **Por qué es importante:** sin este archivo, el modelo no tiene contexto del proyecto y toma decisiones incorrectas. Es la base de todo lo demás.
 
----
-
-### `/task-spec`
-
-**Cuándo usarla:** antes de implementar cualquier tarea — feature, bugfix o refactor.
-
-**Qué hace:**
-1. Verifica que existe `architecture.md` (si no, para y te manda a `/architecture-builder`)
-2. Detecta el tipo de tarea
-3. Te hace todas las preguntas necesarias agrupadas:
-   - Camino feliz: ¿qué debe hacer exactamente?
-   - No-comportamientos: ¿qué NO debe hacer?
-   - Edge cases: ¿qué pasa si el input es nulo, si el registro no existe, si hay conflicto?
-   - Scope: ¿qué capas toca? ¿qué queda explícitamente fuera?
-4. Presenta un resumen de lo entendido y espera tu confirmación antes de implementar
-
-**La regla:** sin spec completo, no se implementa nada.
-
-**Cómo usarla:**
-```
-/task-spec
-```
-
-> **Nota para el flujo SDD:** si usás `/leader`, el `spec_author` ya aplica este mismo protocolo. No hace falta llamar a `/task-spec` por separado.
 
 ---
 
@@ -313,6 +293,10 @@ Emite un SECURITY POSTURE REPORT con findings, escala de confianza y estado.
 ### Skills extra — opcionales por temática
 
 Estas skills se encuentran en la carpeta `skills-extra/` y se pueden incluir en el proyecto durante la inicialización según las necesidades:
+
+#### `/task-spec`
+**Cuándo usarla:** antes de implementar cualquier tarea (feature, bugfix o refactor) de forma manual.
+**Qué hace:** verifica la arquitectura y te hace preguntas estructuradas (camino feliz, edge cases, scope) para generar una especificación técnica. *Nota: si usás `/leader`, no necesitás llamarla manualmente porque el `spec_author` ya la aplica.*
 
 #### `/frontend-design`
 **Cuándo usarla:** para construir interfaces frontend distintivas, con alta calidad estética y que escapen del diseño "genérico de IA".
@@ -494,7 +478,7 @@ Esto permite retomar el trabajo en cualquier momento sin depender de que el mode
 ## Convenciones
 
 - Las skills son archivos `.md` en `.agents/skills/` — se convierten en slash commands en Antigravity CLI
-- Los agentes viven en `.agents/agents/` (ej. `implementer-agent.json`)
+- Los agentes viven en `.agents/agents/` (ej. `implementer/agent.json`)
 - Los logs de `ia-logger` usan numeración secuencial de dos dígitos: `01`, `02`, `03`...
 - Las specs se organizan por feature: `.agents/docs/specs/{feature}/`
 - Todo lo generado por el workflow vive en `.agents/docs/` — nunca en la raíz del proyecto
