@@ -310,6 +310,32 @@ Emite un SECURITY POSTURE REPORT con findings, escala de confianza y estado.
 
 ---
 
+### Skills extra — opcionales por temática
+
+Estas skills se encuentran en la carpeta `skills-extra/` y se pueden incluir en el proyecto durante la inicialización según las necesidades:
+
+#### `/frontend-design`
+**Cuándo usarla:** para construir interfaces frontend distintivas, con alta calidad estética y que escapen del diseño "genérico de IA".
+**Qué hace:** enfoca al agente en tomar decisiones firmes de diseño (tipografía, espacios, contraste y animación) para componentes o páginas web completas.
+
+#### `/ui-ux-pro-max`
+**Cuándo usarla:** cuando las tareas involucran decisiones de estructura visual, accesibilidad y experiencia de usuario.
+**Qué hace:** proporciona una extensa guía y base de conocimiento sobre UX/UI (paletas de colores, estilos, accesibilidad, heurísticas de plataformas) para aplicar mejores prácticas en el diseño.
+
+#### `/to-prd`
+**Cuándo usarla:** cuando necesites convertir el contexto de la conversación actual en un Product Requirements Document (PRD) formal.
+**Qué hace:** sintetiza la conversación y el código en historias de usuario, decisiones de arquitectura y estrategias de testing, para pasarlo al issue tracker.
+
+#### `/zoom-out`
+**Cuándo usarla:** cuando el agente o vos se encuentren en una sección del código desconocida y necesiten contexto.
+**Qué hace:** le pide al agente que se aleje del código específico y brinde una vista de alto nivel y un mapa de relaciones entre los módulos.
+
+#### Suite de Three.js (`threejs-skills/`)
+**Cuándo usarla:** para proyectos web que incluyan experiencias en 3D interactivas.
+**Qué hace:** un conjunto de skills ultra especializadas en Three.js (`/threejs-animation`, `/threejs-geometry`, `/threejs-lighting`, `/threejs-materials`, `/threejs-shaders`, etc.) para asegurar las mejores prácticas en modelado, texturas y rendimiento 3D.
+
+---
+
 ## Los agentes del flujo SDD
 
 Los agentes son subagentes especializados que `leader` spawna durante el flujo SDD. Cada uno tiene un rol fijo y no puede salirse de él.
