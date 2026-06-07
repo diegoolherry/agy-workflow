@@ -1,0 +1,27 @@
+{
+    "name": "zoom-out",
+    "displayName": "Zoom Out",
+    "description": "High-level architecture review and system-wide reasoning for growing codebases.",
+    "version": "1.0.0",
+    "author": "Diego",
+    "license": "MIT",
+    "keywords": [
+        "architecture",
+        "systems",
+        "codebase",
+        "scalability",
+        "technical-debt",
+        "engineering",
+        "ai-skill"
+    ],
+    "platforms": [
+        "claude",
+        "cursor",
+        "windsurf",
+        "copilot",
+        "codex",
+        "gemini",
+        "continue",
+        "antigravity"
+    ]
+}

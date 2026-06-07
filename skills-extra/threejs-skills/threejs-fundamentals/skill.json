@@ -1,0 +1,25 @@
+{
+    "name": "threejs-fundamentals",
+    "displayName": "Three.js - Fundamentals",
+    "description": "Three.js scene setup, cameras, renderer, Object3D hierarchy, coordinate systems. Use when setting up 3D scenes, creating cameras, configuring renderers, managing object hierarchies, or working with transforms.",
+    "version": "1.0.0",
+    "author": "Diego",
+    "license": "MIT",
+    "keywords": [
+        "threejs",
+        "webgl",
+        "3d",
+        "fundamentals",
+        "ai-skill"
+    ],
+    "platforms": [
+        "claude",
+        "cursor",
+        "windsurf",
+        "copilot",
+        "codex",
+        "gemini",
+        "continue",
+        "antigravity"
+    ]
+}

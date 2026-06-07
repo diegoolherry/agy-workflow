@@ -1,0 +1,5 @@
+# DiegoAI-Stack gitignore
+.agents/docs/
+.agents/docs/*
+.DS_Store
+Thumbs.db

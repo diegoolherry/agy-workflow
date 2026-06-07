@@ -1,0 +1,25 @@
+{
+    "name": "threejs-loaders",
+    "displayName": "Three.js - Loaders",
+    "description": "Three.js asset loading - GLTF, textures, images, models, async patterns. Use when loading 3D models, textures, HDR environments, or managing loading progress.",
+    "version": "1.0.0",
+    "author": "Diego",
+    "license": "MIT",
+    "keywords": [
+        "threejs",
+        "webgl",
+        "3d",
+        "loaders",
+        "ai-skill"
+    ],
+    "platforms": [
+        "claude",
+        "cursor",
+        "windsurf",
+        "copilot",
+        "codex",
+        "gemini",
+        "continue",
+        "antigravity"
+    ]
+}

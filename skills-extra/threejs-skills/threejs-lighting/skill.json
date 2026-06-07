@@ -1,0 +1,25 @@
+{
+    "name": "threejs-lighting",
+    "displayName": "Three.js - Lighting",
+    "description": "Three.js lighting - light types, shadows, environment lighting. Use when adding lights, configuring shadows, setting up IBL, or optimizing lighting performance.",
+    "version": "1.0.0",
+    "author": "Diego",
+    "license": "MIT",
+    "keywords": [
+        "threejs",
+        "webgl",
+        "3d",
+        "lighting",
+        "ai-skill"
+    ],
+    "platforms": [
+        "claude",
+        "cursor",
+        "windsurf",
+        "copilot",
+        "codex",
+        "gemini",
+        "continue",
+        "antigravity"
+    ]
+}

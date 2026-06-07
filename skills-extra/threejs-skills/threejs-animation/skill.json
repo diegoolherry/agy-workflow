@@ -1,0 +1,25 @@
+{
+    "name": "threejs-animation",
+    "displayName": "Three.js - Animation",
+    "description": "Three.js animation - keyframe animation, skeletal animation, morph targets, animation mixing. Use when animating objects, playing GLTF animations, creating procedural motion, or blending animations.",
+    "version": "1.0.0",
+    "author": "Diego",
+    "license": "MIT",
+    "keywords": [
+        "threejs",
+        "webgl",
+        "3d",
+        "animation",
+        "ai-skill"
+    ],
+    "platforms": [
+        "claude",
+        "cursor",
+        "windsurf",
+        "copilot",
+        "codex",
+        "gemini",
+        "continue",
+        "antigravity"
+    ]
+}
