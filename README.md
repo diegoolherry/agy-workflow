@@ -486,6 +486,98 @@ Esto permite retomar el trabajo en cualquier momento sin depender de que el mode
 
 ---
 
+## Adaptación a Claude Code
+
+Claude Code usa una estructura similar pero con algunas diferencias de formato. La filosofía del workflow es idéntica — lo que cambia son las rutas y el formato de los agentes.
+
+### Estructura equivalente en Claude Code
+
+```text
+tu-proyecto/
+├── CLAUDE.md                  ← contexto global del proyecto (equivalente a architecture.md pero leído automáticamente)
+├── feature_list.json
+└── .claude/
+    ├── skills/                ← skills core (equivalente a .agents/skills/)
+    │   ├── project-init/
+    │   │   └── SKILL.md
+    │   ├── architecture-builder/
+    │   │   └── SKILL.md
+    │   ├── ia-logger/
+    │   │   └── SKILL.md
+    │   ├── diagnose/
+    │   │   └── SKILL.md
+    │   ├── leader/
+    │   │   └── SKILL.md
+    │   ├── code-review/
+    │   │   └── SKILL.md
+    │   └── security-audit/
+    │       └── SKILL.md
+    ├── agents/                ← subagentes SDD (formato .md en vez de .json)
+    │   ├── researcher.md
+    │   ├── spec_author.md
+    │   ├── implementer.md
+    │   └── reviewer.md
+    └── docs/                  ← misma estructura que en Antigravity
+        ├── specs/
+        ├── logs/
+        └── progress/
+```
+
+### Diferencias de formato
+
+- **Skills** — en Claude Code el archivo se llama `SKILL.md` (en mayúsculas) y vive en `.claude/skills/{nombre}/SKILL.md`. El frontmatter y el contenido son idénticos a los de este repo.
+- **Agentes** — en Claude Code los agentes son archivos `.md` (no `.json`) con este formato:
+
+```markdown
+---
+name: researcher
+description: Analiza el codebase antes de escribir cualquier spec. Solo lectura. Invocar automáticamente al iniciar el flujo SDD.
+tools: Read, Grep, Glob
+model: claude-sonnet-4-6
+---
+
+[instrucciones del agente aquí — mismo contenido que el campo persona.instructions del agent.json]
+```
+
+Las herramientas disponibles son: `Read`, `Write`, `Edit`, `Bash`, `Grep`, `Glob`, `WebFetch`, `TodoRead`, `TodoWrite`. Usar solo las necesarias por agente:
+
+- `researcher` → Read, Grep, Glob
+- `spec_author` → Read, Write, Edit
+- `implementer` → Read, Write, Edit, Bash
+- `reviewer` → Read, Grep, Glob
+
+- **CLAUDE.md** — Claude Code lee automáticamente este archivo al iniciar cada sesión. Es el equivalente a `architecture.md` pero más potente porque no hay que cargarlo manualmente. `project-init` debe crearlo si no existe, con instrucciones para que el agente lea `.claude/docs/architecture.md` si existe.
+
+- **Agentes globales** — para tener los agentes disponibles en todos tus proyectos sin copiarlos:
+
+```bash
+# macOS / Linux
+cp -r .claude/agents/* ~/.claude/agents/
+
+# Windows
+xcopy .claude\agents\* %USERPROFILE%\.claude\agents\ /E /I
+```
+
+- **Invocar agentes** — desde abril 2026 podés mencionar agentes directamente con `@nombre-agente` en el prompt. Por ejemplo: `@researcher analizá el módulo de autenticación`.
+
+### Lo que NO cambia
+
+- La filosofía completa del workflow
+- El contenido de las skills (mismo texto, distinto nombre de archivo)
+- La estructura de `.claude/docs/` (specs, logs, progress)
+- `feature_list.json`
+- El flujo SDD completo
+
+### Instalación para Claude Code
+
+```bash
+git clone https://github.com/diegoolherry/agy-workflow.git
+```
+
+Luego copiá la carpeta `.claude/` a tu proyecto (cuando esté disponible en el repo) o adaptá manualmente los archivos siguiendo las diferencias descriptas arriba.
+
+---
+
 ## Preguntas frecuentes
 
 **¿Puedo usar esto sin `/leader`?**
