@@ -1,8 +1,8 @@
-# DiegoAI-Stack
+# DiegoAI-Stack V2.0
 
-Sistema de trabajo agéntico para desarrollo de software con Antigravity CLI. Organiza skills, agentes especializados y documentación generada dentro de cada proyecto, bajo la carpeta `.agents/`.
+Sistema de trabajo agéntico para desarrollo de software con Antigravity CLI. Organiza un equipo de agentes especializados — cada uno con un rol fijo — que colaboran para investigar, diseñar, implementar, revisar y auditar features dentro de tu proyecto.
 
-Pensado para desarrolladores que quieren trabajar con IA de forma estructurada, sin perder el control del código ni depender de que el modelo "adivine" lo que tiene que hacer.
+Pensado para desarrolladores que quieren trabajar con IA de forma estructurada: el agente no improvisa, no asume y no mezcla responsabilidades. Vos mantenés el control.
 
 ---
 
@@ -11,12 +11,12 @@ Pensado para desarrolladores que quieren trabajar con IA de forma estructurada, 
 Cuando empezás a usar IA para programar, todo parece mágico al principio. Le pedís que haga algo, lo hace. Pero a medida que el proyecto crece, empiezan los problemas:
 
 - El modelo asume cosas que no debería asumir
-- No recuerda las decisiones que tomaste antes
+- No recuerda las decisiones de arquitectura que tomaste antes
 - Mezcla tareas y rompe cosas que ya funcionaban
 - No sabés qué hizo exactamente ni por qué
 - Cada sesión empieza desde cero
 
-**DiegoAI-Stack** resuelve eso con un sistema de reglas, roles y estado persistente. El modelo no improvisa — sigue un protocolo. Vos mantenés el control.
+**DiegoAI-Stack V2.0** resuelve eso con un sistema de roles, protocolos y estado persistente en disco. El modelo sigue instrucciones concretas — no adivina.
 
 ---
 
@@ -36,8 +36,8 @@ Antes de implementar, el humano aprueba la spec. El modelo no avanza solo.
 **Roles separados y no negociables.**
 El que investiga no escribe specs. El que escribe specs no implementa. El que implementa no revisa. El que revisa no edita. El leader no toca código.
 
-**Sin suposiciones silenciosas.**
-Antes de implementar cualquier tarea, el sistema valida que el spec esté completo. Si algo es ambiguo, pregunta. No asume.
+**Memoria inmutable (ADRs).**
+Cada decisión técnica o de seguridad relevante se registra como un *Architecture Decision Record* en `.agents/docs/architecture/decisions/`. Las decisiones no se pierden entre sesiones y todos los agentes las respetan.
 
 ---
 
@@ -51,23 +51,13 @@ Antes de implementar cualquier tarea, el sistema valida que el spec esté comple
 
 ## Instalación
 
-**1. Clonar este repo en tu máquina:**
+**1. Clonar este repositorio:**
 
 ```bash
-git clone https://github.com/tu-usuario/DiegoAI-Stack.git
+git clone https://github.com/diegoolherry/agy-workflow.git
 ```
 
-**2. Configurar tu ruta global.**
-
-Abrí el archivo `.agents/skills/project-init/project-init-SKILL.md` y reemplazá `[RUTA_SKILLS_DIEGO]` con la ruta absoluta donde clonaste este repo.
-
-Por ejemplo:
-- Windows: `C:/Users/tu-usuario/DiegoAI-Stack`
-- macOS/Linux: `/home/tu-usuario/DiegoAI-Stack`
-
-**3. Copiar los agentes a tu carpeta global de Antigravity (opcional pero recomendado).**
-
-Antigravity CLI permite agentes globales disponibles en todos los proyectos:
+**2. Copiar los agentes a tu entorno de Antigravity:**
 
 ```bash
 # macOS / Linux
@@ -77,60 +67,64 @@ cp -r .agents/agents/* ~/.gemini/antigravity-cli/agents/
 xcopy .agents\agents\* %USERPROFILE%\.gemini\antigravity-cli\agents\ /E /I
 ```
 
-**4. Inicializar un proyecto.**
+**3. Inicializar un proyecto:**
 
 Navegá a la raíz de tu proyecto y ejecutá en Antigravity CLI:
 
 ```
-/project-init
+/workflow-init
 ```
 
-Eso es todo. El sistema se configura solo.
+Eso crea toda la estructura `.agents/`, genera el contexto de arquitectura y deja el proyecto listo para trabajar.
 
 ---
 
 ## Estructura del sistema
 
+### El repositorio
+
 ```
 DiegoAI-Stack/
-├── .agents/
-│   ├── skills/           → skills core que van a todos los proyectos
-│   │   ├── project-init/
-│   │   ├── architecture-builder/
-│   │   ├── ia-logger/
-│   │   ├── diagnose/
-│   │   ├── leader/
-│   │   ├── code-review/
-│   │   └── security-audit/
-│   └── agents/           → subagentes especializados del flujo SDD
-│       ├── implementer/
-│       │   └── agent.json
-│       ├── researcher/
-│       │   └── agent.json
-│       ├── reviewer/
-│       │   └── agent.json
-│       └── spec_author/
-│           └── agent.json
-└── skills-extra/         → skills opcionales por temática
-    ├── frontend-desing/
-    ├── task-spec/
-    ├── threejs-skills/
-    ├── to-prd/
-    ├── ui-ux-pro-max-skill/
-    └── zoom-out/
+└── .agents/
+    ├── skills/               → skills core (slash commands del sistema)
+    │   ├── workflow-init/
+    │   ├── architecture-builder/
+    │   ├── leader/
+    │   ├── feature-research/
+    │   ├── spec-requirements/
+    │   ├── spec-design/
+    │   ├── spec-tasks/
+    │   ├── tdd-implement/
+    │   ├── spec-review/
+    │   ├── code-review/
+    │   ├── security-audit/
+    │   ├── diagnose/
+    │   └── ia-logger/
+    └── agents/               → configuración de los subagentes especializados
+        ├── researcher/
+        │   └── agent.json
+        ├── spec_author/
+        │   └── agent.json
+        ├── implementer/
+        │   └── agent.json
+        ├── reviewer/
+        │   └── agent.json
+        └── security_auditor/
+            └── agent.json
 ```
 
-Una vez inicializado un proyecto, la estructura dentro de él queda así:
+### Tu proyecto (después de `/workflow-init`)
 
 ```
 tu-proyecto/
-├── feature_list.json        → listado de features con su estado
+├── feature_list.json          → lista de features con su estado
 └── .agents/
-    ├── skills/              → skills activas en este proyecto
-    ├── agents/              → agentes activos en este proyecto
-    └── docs/                → toda la documentación generada (en .gitignore)
-        ├── architecture.md
+    ├── skills/
+    ├── agents/
+    └── docs/                  → documentación generada (va en .gitignore)
+        ├── architecture.md    → fuente de verdad del sistema
         ├── architecture/
+        │   └── decisions/     → ADRs: historial inmutable de decisiones
         ├── specs/
         │   └── {feature}/
         │       ├── requirements.md
@@ -141,198 +135,104 @@ tu-proyecto/
         └── progress/
             ├── current.md
             ├── history.md
-            ├── research_{feature}.md
-            ├── impl_{feature}.md
-            └── review_{feature}.md
+            ├── researchs/
+            │   └── research_{feature}.md
+            ├── impl/
+            │   └── impl_{feature}.md
+            └── review/
+                ├── review_{feature}.md
+                └── security_{feature}.md
 ```
 
 ---
 
-## Skills — los comandos del sistema
+## Las skills — los comandos del sistema
 
 Las skills son archivos `.md` que Antigravity CLI convierte en slash commands. Escribís `/nombre-skill` y el agente ejecuta el protocolo definido en ese archivo.
 
-### Skills core — van a todos los proyectos
-
----
-
-### `/project-init`
+### `/workflow-init`
 
 **Cuándo usarla:** siempre que empezás a trabajar en un proyecto, sea nuevo o ya existente.
 
 **Qué hace:**
-1. Crea la estructura completa de `.agents/` (skills, agents, docs, logs, progress, specs)
-2. Copia todas las skills core al proyecto
-3. Copia los agentes del workflow SDD
-4. Te pregunta qué skills opcionales querés incluir
-5. Genera `feature_list.json` vacío en la raíz del proyecto
-6. Llama automáticamente a `/architecture-builder` si no hay contexto de arquitectura
-
-**Cómo usarla:**
-```
-/project-init
-```
+1. Crea la estructura completa de `.agents/` (skills, agents, docs, progress, specs, logs, decisions)
+2. Llama automáticamente a `/architecture-builder` si no hay contexto de arquitectura
 
 ---
 
 ### `/architecture-builder`
 
-**Cuándo usarla:** al iniciar un proyecto nuevo o cuando no existe `.agents/docs/architecture.md`. `project-init` la llama automáticamente, pero podés invocarla directamente si necesitás actualizar el contexto.
+**Cuándo usarla:** al iniciar un proyecto o cuando querés regenerar el contexto.
 
 **Qué hace:**
 
-En proyectos nuevos, te entrevista en 4 rondas:
-1. **Proyecto base** — nombre, objetivo, tipo y stack
-2. **Estructura y capas** — organización de carpetas, qué hace cada capa
-3. **Reglas de negocio** — la parte más importante: entidades, relaciones, restricciones del dominio
-4. **Convenciones y prohibiciones** — nombrado, decisiones fijas, cosas que el modelo nunca debe hacer
+En proyectos nuevos, te hace preguntas sobre el dominio, stack y reglas de negocio. En proyectos existentes, analiza el código y solo pregunta lo que no puede deducir.
 
-En proyectos existentes, analiza el código, te presenta lo que infirió y solo pregunta lo que no puede deducir.
-
-Genera uno o varios archivos según la complejidad del proyecto:
+Genera el contexto en función de la complejidad:
 - Proyecto simple → `architecture.md`
 - Proyecto complejo → `architecture.md` + archivos por dominio en `architecture/`
-
-**Por qué es importante:** sin este archivo, el modelo no tiene contexto del proyecto y toma decisiones incorrectas. Es la base de todo lo demás.
-
-
----
-
-### `/ia-logger`
-
-**Cuándo usarla:** se ejecuta automáticamente al finalizar cada tarea. No necesitás invocarla manualmente.
-
-**Qué hace:** crea un archivo de log en `.agents/docs/logs/` con este contenido:
-- Fecha, hora y modelo de IA utilizado
-- Tipo de tarea (feature / bugfix / refactor)
-- Qué se hizo
-- Decisión clave tomada (si aplica)
-- Problemas encontrados y cómo se resolvieron (si aplica)
-- Cómo contribuyó la IA
-- Estado final y pendientes
-
-**Por qué existe:** tener un registro de qué hizo la IA y por qué es valioso para auditar, aprender y retomar trabajo.
-
----
-
-### `/diagnose`
-
-**Cuándo usarla:** cuando hay un bug, error, comportamiento inesperado o regresión de performance.
-
-**Qué hace:** aplica un loop de debugging disciplinado en 6 fases:
-
-1. **Construir un feedback loop** — antes de hacer cualquier cosa, construir una señal pass/fail reproducible. Si no podés reproducir el bug, no podés arreglarlo.
-2. **Reproducir** — verificar que el loop produce exactamente el bug que describiste
-3. **Hipotetizar** — chequear tabla de patrones conocidos (race condition, null propagation, state corruption, etc.) y generar 3 a 5 hipótesis falsificables rankeadas
-4. **Instrumentar** — testear hipótesis de a una, con la regla de 3 strikes: si 3 hipótesis fallan, para y escala
-5. **Fix + regression test** — fix de causa raíz, no del síntoma. Test antes del fix.
-6. **Cleanup + post-mortem** — remover logs de debug, documentar causa raíz
-
-Emite un DEBUG REPORT estructurado al cerrar.
 
 ---
 
 ### `/leader`
 
-**Cuándo usarla:** para implementar una feature completa o ejecutar un workflow de alto nivel.
+**Cuándo usarla:** para implementar una feature completa de punta a punta.
 
-**Qué hace:** detecta el modo según lo que le escribís y coordina subagentes:
+**Qué hace:** orquesta todos los subagentes siguiendo el flujo SDD. También responde a modos predefinidos:
 
-**Modos predefinidos:**
-- `pre-deploy` → `/code-review` + `/security-audit` en paralelo → GO / NO-GO
-- `pre-merge` → `/code-review` → APROBADO / BLOQUEADO
-- `post-bugfix` → verifica el fix + registra en `/ia-logger`
-- `sprint-start` → lee `feature_list.json` + historial → resumen de qué atacar primero
+- `pre-deploy` → auditoría de seguridad completa
+- `pre-merge` → code review antes de mergear
+- `post-bugfix` → verifica el fix y lo registra
 
-**Flujo SDD (para features nuevas):**
-```
-researcher → spec_author → [aprobación humana] → implementer → reviewer → cierre
-```
-Ver sección "El flujo SDD" más abajo para el detalle completo.
-
-**Modo dinámico:** si el objetivo no encaja en ningún modo predefinido, el leader razona qué agentes usar, te presenta el plan y espera tu confirmación antes de ejecutar.
-
-**La regla del leader:** nunca toca código directamente. Todo pasa por subagentes.
+Ver sección "El flujo SDD" para el detalle completo.
 
 ---
 
-### `/code-review`
+### `/diagnose`
 
-**Cuándo usarla:** antes de mergear cualquier cambio.
+**Cuándo usarla:** cuando hay un bug, error o comportamiento inesperado.
 
-**Qué hace:**
-1. Obtiene el diff contra la rama base
-2. Detecta el scope del cambio (auth, db, api, frontend, concurrencia)
-3. Aplica categorías de findings:
-   - **P1 (críticos, bloquean el merge):** SQL injection, autorización rota, secrets hardcodeados, race conditions, null references
-   - **P2 (informativos):** lógica duplicada, manejo de errores genérico, tests incompletos
-4. Cada finding cita la línea exacta que lo motiva y tiene un score de confianza del 1 al 10
-5. Emite un CODE REVIEW con score numérico y estado APROBADO / APROBADO CON OBSERVACIONES / BLOQUEADO
+**Qué hace:** aplica un loop de debugging disciplinado:
+
+1. Construye un feedback loop reproducible (sin loop, no hay hipótesis)
+2. Genera 3 a 5 hipótesis falsificables rankeadas
+3. Las testea de a una con la regla de 3 strikes
+4. Aplica fix de causa raíz + regression test
+5. Emite un DEBUG REPORT estructurado
 
 ---
 
 ### `/security-audit`
 
-**Cuándo usarla:** antes de poner algo en producción o cuando querés una revisión de seguridad.
+**Cuándo usarla:** antes de poner algo en producción, o es invocada automáticamente por el leader cuando una feature toca auth, db o concurrencia.
 
-**Qué hace:** auditoría en 7 fases:
-1. Modelo mental del sistema + detección del stack
-2. Mapa de superficie de ataque (endpoints públicos, autenticados, admin)
-3. Arqueología de secretos (historial git, archivos .env, credenciales hardcodeadas)
-4. Supply chain (dependencias con CVEs conocidos)
-5. OWASP Top 10 (las 10 vulnerabilidades web más comunes)
-6. STRIDE threat model por componente
-7. Clasificación de datos (qué datos maneja el sistema y qué tan sensibles son)
+**Modos de operación:**
+- **Modo Feature** — audita solo los archivos modificados por la feature en curso. Aplica OWASP y STRIDE de forma focalizada.
+- **Modo Global** — escanea el proyecto entero: historial git, dependencias con CVEs, superficies de ataque completas.
 
-Emite un SECURITY POSTURE REPORT con findings, escala de confianza y estado.
-
-> ⚠️ Esta auditoría es un primer filtro asistido por IA. Para sistemas en producción con datos sensibles, reemplazá con una auditoría profesional de seguridad.
+Si detecta un riesgo estructural, emite un **ADR** en `.agents/docs/architecture/decisions/` que todos los agentes respetarán en el futuro.
 
 ---
 
-### Skills extra — opcionales por temática
+### `/ia-logger`
 
-Estas skills se encuentran en la carpeta `skills-extra/` y se pueden incluir en el proyecto durante la inicialización según las necesidades:
+**Cuándo usarla:** se ejecuta automáticamente al finalizar cada feature. No necesitás invocarla.
 
-#### `/task-spec`
-**Cuándo usarla:** antes de implementar cualquier tarea (feature, bugfix o refactor) de forma manual.
-**Qué hace:** verifica la arquitectura y te hace preguntas estructuradas (camino feliz, edge cases, scope) para generar una especificación técnica. *Nota: si usás `/leader`, no necesitás llamarla manualmente porque el `spec_author` ya la aplica.*
-
-#### `/frontend-design`
-**Cuándo usarla:** para construir interfaces frontend distintivas, con alta calidad estética y que escapen del diseño "genérico de IA".
-**Qué hace:** enfoca al agente en tomar decisiones firmes de diseño (tipografía, espacios, contraste y animación) para componentes o páginas web completas.
-
-#### `/ui-ux-pro-max`
-**Cuándo usarla:** cuando las tareas involucran decisiones de estructura visual, accesibilidad y experiencia de usuario.
-**Qué hace:** proporciona una extensa guía y base de conocimiento sobre UX/UI (paletas de colores, estilos, accesibilidad, heurísticas de plataformas) para aplicar mejores prácticas en el diseño.
-
-#### `/to-prd`
-**Cuándo usarla:** cuando necesites convertir el contexto de la conversación actual en un Product Requirements Document (PRD) formal.
-**Qué hace:** sintetiza la conversación y el código en historias de usuario, decisiones de arquitectura y estrategias de testing, para pasarlo al issue tracker.
-
-#### `/zoom-out`
-**Cuándo usarla:** cuando el agente o vos se encuentren en una sección del código desconocida y necesiten contexto.
-**Qué hace:** le pide al agente que se aleje del código específico y brinde una vista de alto nivel y un mapa de relaciones entre los módulos.
-
-#### Suite de Three.js (`threejs-skills/`)
-**Cuándo usarla:** para proyectos web que incluyan experiencias en 3D interactivas.
-**Qué hace:** un conjunto de skills ultra especializadas en Three.js (`/threejs-animation`, `/threejs-geometry`, `/threejs-lighting`, `/threejs-materials`, `/threejs-shaders`, etc.) para asegurar las mejores prácticas en modelado, texturas y rendimiento 3D.
+**Qué hace:** crea un archivo de log en `.agents/docs/logs/` con: fecha, modelo, qué se hizo, decisión clave tomada, problemas encontrados y cómo contribuyó la IA.
 
 ---
 
 ## Los agentes del flujo SDD
 
-Los agentes son subagentes especializados que `leader` spawna durante el flujo SDD. Cada uno tiene un rol fijo y no puede salirse de él.
+Los agentes son subagentes especializados que `/leader` coordina. Cada uno tiene un input esperado, un output concreto y no puede salirse de su rol.
 
 ### `researcher` — Codebase Researcher
 
 Solo lectura. Nunca modifica código.
 
-Analiza el codebase antes de que se escriba cualquier spec. Identifica qué módulos toca la feature nueva, qué convenciones existen, qué dependencias son relevantes y qué fricciones puede haber con código existente.
+Analiza el codebase antes de que se escriba cualquier spec. Lee el contexto de arquitectura, los ADRs vigentes y el código relevante para detectar fricciones, convenciones y dependencias que impactan la nueva feature.
 
-**Output:** `.agents/docs/progress/research_{feature}.md`
-
-**Modelo:** Gemini 3.1 Pro (High) — necesita razonar sobre arquitectura, no solo leer
+**Output:** `.agents/docs/progress/researchs/research_{feature}.md`
 
 ---
 
@@ -340,35 +240,30 @@ Analiza el codebase antes de que se escriba cualquier spec. Identifica qué mód
 
 No escribe código.
 
-Con el contexto del researcher, escribe los 3 archivos de spec:
+Con el research como base, genera los 3 archivos de spec ejecutando sus skills modulares en secuencia:
 
-- **`requirements.md`** — criterios de aceptación en formato Gherkin. Cubre camino feliz, edge cases y casos de error.
-- **`design.md`** — decisiones técnicas, cambios al modelo de datos, interfaces y contratos con firmas concretas
-- **`tasks.md`** — checklist ordenado de tasks. Cada task debe ser implementable de forma independiente y tener un test asociado
+1. `/spec-requirements` → `requirements.md` con criterios de aceptación en Gherkin
+2. `/spec-design` → `design.md` con decisiones técnicas, modelo de datos e interfaces
+3. `/spec-tasks` → `tasks.md` con checklist atómico, una task = un test
 
-Si hay ambigüedades, las marca con `[PENDIENTE: descripción]` en vez de asumir.
+Si algo es ambiguo, lo marca con `[PENDIENTE: descripción]` en vez de asumir.
 
 **Output:** `.agents/docs/specs/{feature}/`
-
-**Modelo:** Claude Sonnet 4.6 (Thinking) — la spec es el artefacto más crítico del workflow
 
 ---
 
 ### `implementer` — TDD Implementer
 
-Implementa la spec aprobada siguiendo TDD estricto.
+Implementa la spec aprobada siguiendo TDD estricto. El ciclo por cada task es:
 
-El ciclo por cada task es:
-1. **RED** — escribir el test que define el comportamiento esperado. Verificar que falla.
-2. **GREEN** — escribir el código mínimo que hace pasar el test. Nada más.
-
-Una task a la vez. No avanza a la siguiente sin tener el test en verde. No refactoriza código adyacente.
+1. **RED** — escribe el test. Lo ejecuta en la terminal y verifica que falla.
+2. **GREEN** — escribe el código mínimo para que pase. Nada más.
+3. **REFACTOR** — limpia lo que acaba de escribir (solo ese archivo). No refactoriza lo que no tocó.
+4. **COMMIT** — hace un commit atómico con `feat: [descripción] [T{n}]`.
 
 Si falla 3 veces en una task, invoca `/diagnose`. Si el bloqueo persiste, reporta `BLOQUEADO en T{n}` y para.
 
-**Output:** `.agents/docs/progress/impl_{feature}.md`
-
-**Modelo:** Claude Sonnet 4.6 (Thinking) — genera código real, es donde más importa la calidad
+**Output:** `.agents/docs/progress/impl/impl_{feature}.md`
 
 ---
 
@@ -376,19 +271,30 @@ Si falla 3 veces en una task, invoca `/diagnose`. Si el bloqueo persiste, report
 
 Nunca edita código.
 
-Valida que la implementación cubre cada criterio de aceptación Gherkin de la spec. Por cada scenario, verifica que existe un test que lo cubre. Un criterio sin test es rechazo automático.
+Realiza la revisión en dos pasadas:
 
-Emite APROBADO o RECHAZADO con findings concretos que incluyen archivo y línea.
+1. `/spec-review` — verifica que cada criterio Gherkin tiene un test real que lo cubre. Ejecuta la suite completa en la terminal. Un criterio sin test es rechazo automático.
+2. `/code-review` — evalúa calidad, arquitectura y coherencia con los ADRs vigentes.
 
-**Output:** `.agents/docs/progress/review_{feature}.md`
+Emite APROBADO o RECHAZADO con findings que incluyen archivo y línea.
 
-**Modelo:** Gemini 3.5 Flash (High) — tiene criterios explícitos para comparar, no necesita inferir
+**Output:** `.agents/docs/progress/review/review_{feature}.md`
+
+---
+
+### `security_auditor` — Security Auditor
+
+Solo es invocado cuando la feature toca dominios sensibles (auth, db, concurrencia).
+
+Aplica STRIDE y OWASP Top 10 sobre los archivos modificados en Modo Feature. Si encuentra un bug con fix directo, el leader devuelve el trabajo al implementer (Auto-Fix loop). Si descubre un riesgo estructural, emite un ADR y actualiza `architecture.md`.
+
+**Output:** `.agents/docs/progress/review/security_{feature}.md`
 
 ---
 
 ## El flujo SDD
 
-SDD (Spec-Driven Development) es el flujo completo para implementar una feature. Lo orquesta `/leader`.
+SDD (Spec-Driven Development) es el flujo completo orquestado por `/leader`.
 
 ```
 /leader "implementá {feature}"
@@ -400,56 +306,69 @@ SDD (Spec-Driven Development) es el flujo completo para implementar una feature.
          │
          ├─ Fase 1 — research
          │    Agente: researcher
-         │    Output: .agents/docs/progress/research_{feature}.md
+         │    Lee architecture.md, ADRs y código relevante
+         │    Output: progress/researchs/research_{feature}.md
          │
          ├─ Fase 2 — spec
          │    Agente: spec_author
-         │    Lee: research_{feature}.md + architecture.md
-         │    Output: specs/{feature}/requirements.md
-         │             specs/{feature}/design.md
-         │             specs/{feature}/tasks.md
+         │    Genera: requirements.md → design.md → tasks.md
          │
          ├─ ⏸ PAUSA — aprobación humana obligatoria
-         │    El leader te muestra dónde están los archivos
-         │    Revisás los criterios de aceptación, el diseño y las tasks
-         │    Decís "aprobado" o pedís cambios
-         │    Sin tu OK, no continúa
+         │    El leader te avisa dónde están los archivos
+         │    Revisás criterios, diseño y tasks
+         │    Sin tu "aprobado", no continúa
          │
          ├─ Fase 3 — implementación (TDD)
          │    Agente: implementer
-         │    Ciclo RED → GREEN por cada task
+         │    Ciclo RED → GREEN → REFACTOR → COMMIT por cada task
          │    Si se bloquea → /diagnose → si persiste → escala al usuario
-         │    Output: .agents/docs/progress/impl_{feature}.md
+         │    Output: progress/impl/impl_{feature}.md
          │
          ├─ Fase 4 — review
          │    Agente: reviewer
-         │    Valida cada criterio Gherkin contra su test
-         │    APROBADO → continuar
-         │    RECHAZADO → volver a Fase 3 con feedback concreto
-         │    Máximo 2 rechazos antes de escalar al usuario
+         │    Pasada 1: negocio + tests en terminal
+         │    Pasada 2: calidad + ADRs
+         │    RECHAZADO → vuelve a Fase 3 con feedback concreto (máx. 2 veces)
+         │    Output: progress/review/review_{feature}.md
          │
-         └─ Fase 5 — cierre
+         ├─ Fase 5 — seguridad (condicional)
+         │    Agente: security_auditor (solo si toca auth, db o concurrencia)
+         │    Si hay bug crítico con fix directo → vuelve a Fase 3 (1 vez)
+         │    Si hay riesgo estructural → emite ADR
+         │    Output: progress/review/security_{feature}.md
+         │
+         └─ Fase 6 — cierre
               feature_list.json → "status": "done"
-              /ia-logger registra la tarea
+              /ia-logger registra la tarea en disco
               progress/history.md se actualiza
               Resumen final al usuario
 ```
 
-### SDD vs TDD — no son lo mismo
+---
 
-Es común confundirlos. Son capas distintas del mismo proceso:
+## El ecosistema ADR
 
-- **SDD** opera *antes* de escribir código. Define qué debe hacer el sistema. El output son specs.
-- **TDD** opera *durante* la implementación. El `implementer` escribe el test que falla primero, luego el código que lo hace pasar.
-- **Gherkin** es el puente: los criterios de aceptación en `requirements.md` están en formato Gherkin, que luego el `reviewer` usa para verificar que cada scenario tiene su test.
+Los *Architecture Decision Records* son la memoria a largo plazo del sistema.
 
-El flujo completo es: SDD define qué hacer → TDD define cómo hacerlo → Gherkin verifica que se hizo.
+Cuando tomas una decisión técnica importante — o cuando el `security_auditor` descubre una restricción estructural — se crea un archivo en `.agents/docs/architecture/decisions/` con este formato:
+
+```markdown
+# ADR-001: Uso de JWT stateless para autenticación
+
+**Fecha:** 09/06/2026
+**Estado:** Vigente
+**Contexto:** El sistema necesita autenticación sin estado para escalar horizontalmente.
+**Decisión:** JWT con expiración corta (15 min) + refresh token. Sin blacklist server-side.
+**Consecuencias:** No es posible invalidar tokens antes de su expiración. El logout es client-side.
+```
+
+**¿Por qué importa?** Todos los agentes del stack leen la carpeta `decisions/` antes de actuar. Si el `spec_author` intenta diseñar algo que viola un ADR, debe documentar la excepción y justificarla. El `architecture-builder` no puede sobreescribir ADRs existentes. El `code-review` sabe que una violación intencionada de un ADR es más grave que un bug común.
 
 ---
 
 ## `feature_list.json`
 
-Este archivo vive en la raíz del proyecto y es el registro de todas las features. Lo crea `/project-init` vacío y lo mantiene `/leader`.
+Este archivo vive en la raíz del proyecto y es el registro de todas las features. Lo crea `/workflow-init` vacío y lo mantiene `/leader`.
 
 ```json
 [
@@ -467,7 +386,7 @@ Los estados posibles son `pending`, `in_progress` y `done`. El sistema rechaza t
 
 El workflow mantiene dos archivos de estado en `.agents/docs/progress/`:
 
-**`current.md`** — estado de la sesión activa. Se sobreescribe al iniciar cada sesión. Registra qué feature está en curso, en qué fase está, qué agentes están activos y qué decisiones se tomaron.
+**`current.md`** — estado de la sesión activa. Se sobreescribe al iniciar cada sesión. Registra qué feature está en curso, en qué fase y qué decisiones se tomaron.
 
 **`history.md`** — bitácora append-only. Nunca se sobreescribe. Cada feature completada agrega una entrada con fecha, resultado y referencias a los archivos generados.
 
@@ -475,125 +394,135 @@ Esto permite retomar el trabajo en cualquier momento sin depender de que el mode
 
 ---
 
-## Convenciones
-
-- Las skills son archivos `.md` en `.agents/skills/` — se convierten en slash commands en Antigravity CLI
-- Los agentes viven en `.agents/agents/` (ej. `implementer/agent.json`)
-- Los logs de `ia-logger` usan numeración secuencial de dos dígitos: `01`, `02`, `03`...
-- Las specs se organizan por feature: `.agents/docs/specs/{feature}/`
-- Todo lo generado por el workflow vive en `.agents/docs/` — nunca en la raíz del proyecto
-- `.agents/docs/` va en `.gitignore` — la documentación generada no se versiona. `project-init` lo agrega automáticamente.
-
----
-
 ## Adaptación a Claude Code
 
-Claude Code usa una estructura similar pero con algunas diferencias de formato. La filosofía del workflow es idéntica — lo que cambia son las rutas y el formato de los agentes.
+La lógica del sistema — el flujo SDD, los roles de los agentes, los ADRs — es 100% portable. Lo que cambia son las convenciones de archivo de cada plataforma.
 
-### Estructura equivalente en Claude Code
+### Paso 1: Renombrar la carpeta raíz
 
-```text
-tu-proyecto/
-├── CLAUDE.md                  ← contexto global del proyecto (equivalente a architecture.md pero leído automáticamente)
-├── feature_list.json
-└── .claude/
-    ├── skills/                ← skills core (equivalente a .agents/skills/)
-    │   ├── project-init/
-    │   │   └── SKILL.md
-    │   ├── architecture-builder/
-    │   │   └── SKILL.md
-    │   ├── ia-logger/
-    │   │   └── SKILL.md
-    │   ├── diagnose/
-    │   │   └── SKILL.md
-    │   ├── leader/
-    │   │   └── SKILL.md
-    │   ├── code-review/
-    │   │   └── SKILL.md
-    │   └── security-audit/
-    │       └── SKILL.md
-    ├── agents/                ← subagentes SDD (formato .md en vez de .json)
-    │   ├── researcher.md
-    │   ├── spec_author.md
-    │   ├── implementer.md
-    │   └── reviewer.md
-    └── docs/                  ← misma estructura que en Antigravity
-        ├── specs/
-        ├── logs/
-        └── progress/
+En Antigravity la carpeta es `.agents/`. En Claude Code es `.claude/`. Todo lo que sigue aplica con ese cambio de nombre.
+
+```
+.agents/  →  .claude/
 ```
 
-### Diferencias de formato
+### Paso 2: Las skills (sin cambios de contenido)
 
-- **Skills** — en Claude Code el archivo se llama `SKILL.md` (en mayúsculas) y vive en `.claude/skills/{nombre}/SKILL.md`. El frontmatter y el contenido son idénticos a los de este repo.
-- **Agentes** — en Claude Code los agentes son archivos `.md` (no `.json`) con este formato:
+Las skills son el mismo archivo `SKILL.md`. Solo cambia dónde viven:
 
+| Antigravity | Claude Code |
+|---|---|
+| `.agents/skills/{nombre}/SKILL.md` | `.claude/skills/{nombre}/SKILL.md` |
+
+El contenido del archivo es idéntico. No hay nada que reescribir.
+
+### Paso 3: Convertir los agentes de `.json` a `.md`
+
+Claude Code no usa `agent.json`. Los agentes son archivos `.md` con frontmatter YAML. La conversión es directa:
+
+**Antigravity (`agent.json`):**
+```json
+{
+  "name": "researcher",
+  "persona": {
+    "instructions": ["Sos un Codebase Researcher...", "Nunca modificás código."]
+  },
+  "runtime": { "model": "gemini-3.1-pro-high" },
+  "capabilities": { "tools": ["fs_read", "fs_write"] }
+}
+```
+
+**Claude Code (`researcher.md`):**
 ```markdown
 ---
 name: researcher
-description: Analiza el codebase antes de escribir cualquier spec. Solo lectura. Invocar automáticamente al iniciar el flujo SDD.
+description: Analiza el codebase antes de escribir specs. Solo lectura.
 tools: Read, Grep, Glob
 model: claude-sonnet-4-6
 ---
 
-[instrucciones del agente aquí — mismo contenido que el campo persona.instructions del agent.json]
+Sos un Codebase Researcher. Nunca modificás código.
+[resto de las instrucciones del campo persona.instructions]
 ```
 
-Las herramientas disponibles son: `Read`, `Write`, `Edit`, `Bash`, `Grep`, `Glob`, `WebFetch`, `TodoRead`, `TodoWrite`. Usar solo las necesarias por agente:
+**Tabla de mapeo de campos:**
 
-- `researcher` → Read, Grep, Glob
-- `spec_author` → Read, Write, Edit
-- `implementer` → Read, Write, Edit, Bash
-- `reviewer` → Read, Grep, Glob
+| Campo en `.json` | Campo en `.md` frontmatter | Nota |
+|---|---|---|
+| `name` | `name` | Idéntico |
+| `description` | `description` | Idéntico |
+| `persona.instructions` | Cuerpo del archivo (debajo del frontmatter) | Unir los items del array como párrafos |
+| `runtime.model` | `model` | Usar el nombre del modelo de Claude |
+| `capabilities.tools` | `tools` | Ver tabla de herramientas abajo |
 
-- **CLAUDE.md** — Claude Code lee automáticamente este archivo al iniciar cada sesión. Es el equivalente a `architecture.md` pero más potente porque no hay que cargarlo manualmente. `project-init` debe crearlo si no existe, con instrucciones para que el agente lea `.claude/docs/architecture.md` si existe.
+**Herramientas disponibles en Claude Code y su equivalente:**
 
-- **Agentes globales** — para tener los agentes disponibles en todos tus proyectos sin copiarlos:
+| Antigravity | Claude Code |
+|---|---|
+| `fs_read` | `Read`, `Grep`, `Glob` |
+| `fs_write` | `Write`, `Edit` |
+| `terminal` | `Bash` |
+
+### Paso 4: Actualizar las rutas dentro de las skills
+
+Las skills del stack tienen rutas hardcodeadas a `.agents/docs/`. Necesitás hacer un find & replace en todos los archivos:
 
 ```bash
 # macOS / Linux
-cp -r .claude/agents/* ~/.claude/agents/
+grep -rl ".agents/docs" .claude/skills/ | xargs sed -i 's|.agents/docs|.claude/docs|g'
+grep -rl ".agents/docs" .claude/agents/ | xargs sed -i 's|.agents/docs|.claude/docs|g'
 
-# Windows
-xcopy .claude\agents\* %USERPROFILE%\.claude\agents\ /E /I
+# Windows (PowerShell)
+Get-ChildItem -Recurse -Path .claude | ForEach-Object {
+  (Get-Content $_.FullName) -replace '\.agents/docs', '.claude/docs' | Set-Content $_.FullName
+}
 ```
 
-- **Invocar agentes** — desde abril 2026 podés mencionar agentes directamente con `@nombre-agente` en el prompt. Por ejemplo: `@researcher analizá el módulo de autenticación`.
+### Paso 5: Crear el CLAUDE.md
 
-### Lo que NO cambia
+Claude Code lee automáticamente `CLAUDE.md` en la raíz del proyecto al iniciar cada sesión. Creá este archivo para que el agente cargue el contexto:
 
-- La filosofía completa del workflow
-- El contenido de las skills (mismo texto, distinto nombre de archivo)
-- La estructura de `.claude/docs/` (specs, logs, progress)
-- `feature_list.json`
-- El flujo SDD completo
+```markdown
+# Contexto del proyecto
 
-### Instalación para Claude Code
+Antes de cualquier acción, leer:
+- `.claude/docs/architecture.md`
+- `.claude/docs/architecture/decisions/` (ADRs vigentes)
 
-```bash
-git clone https://github.com/diegoolherry/agy-workflow.git
+Todo el output generado va a `.claude/docs/`. Nunca al raíz del proyecto.
 ```
 
-Luego copiá la carpeta `.claude/` a tu proyecto (cuando esté disponible en el repo) o adaptá manualmente los archivos siguiendo las diferencias descriptas arriba.
+### Paso 6: Orquestación manual
+
+A diferencia de Antigravity (donde `/leader` spawna agentes automáticamente), en Claude Code la orquestación es manual vía menciones `@`:
+
+```
+@researcher analizá el codebase para la feature de autenticación
+@spec_author armá la spec completa usando el research
+@implementer implementá la feature siguiendo TDD
+@reviewer revisá la implementación
+```
+
+**Lo que NO cambia:** el flujo SDD completo, las fases, la lógica de los ADRs, el formato de todos los archivos de output, el `feature_list.json` y `SKILL.md` de las skills.
 
 ---
 
 ## Preguntas frecuentes
 
-**¿Puedo usar esto sin `/leader`?**
-Sí. Las skills funcionan de forma independiente. Podés usar `/task-spec` antes de implementar, `/diagnose` cuando hay un bug y `/code-review` antes de mergear, sin necesidad de usar el flujo SDD completo.
-
-**¿Qué pasa si quiero usar esto con Claude Code o Cursor?**
-El sistema está diseñado para Antigravity CLI. Algunas skills funcionan igual en otros entornos, pero los agentes (`agent.json`) son específicos de Antigravity. La adaptación a otros entornos está en los planes futuros.
+**¿Puedo usar las skills por separado sin el flujo SDD completo?**
+Sí. Las skills funcionan de forma independiente. Podés usar `/diagnose` cuando hay un bug, `/security-audit` antes de un deploy o `/code-review` antes de mergear, sin necesidad de usar `/leader`.
 
 **¿El modelo puede modificar las skills?**
-No debería. Las skills son protocolos que el modelo sigue, no código que ejecuta. Si el modelo intenta modificar una skill, algo está mal.
+No debería. Las skills son protocolos que el modelo sigue, no código que ejecuta. Si el modelo intenta modificar una skill para facilitarse el trabajo, es una señal de que algo está mal.
 
 **¿Qué pasa si el `reviewer` rechaza dos veces?**
-El leader escala al usuario. No sigue loopeando automáticamente — eso sería una señal de que hay un problema más profundo que necesita intervención humana.
+El leader escala al usuario. No sigue loopeando automáticamente — dos rechazos son señal de un problema más profundo que necesita intervención humana.
 
 **¿Por qué `.agents/docs/` no se versiona?**
-Porque es documentación generada. Lo que se versiona es el código y las specs una vez aprobadas, no los artefactos intermedios del proceso.
+Porque es documentación generada en el proceso. Lo que se versiona es el código, las skills y los agentes — no los artefactos intermedios del workflow. `/workflow-init` agrega `.agents/docs/` al `.gitignore` automáticamente.
+
+**¿Qué son los ADRs y tengo que crearlos yo?**
+No. Los ADRs los crea automáticamente el `security_auditor` cuando detecta una restricción estructural. Vos podés crear uno manualmente también, pero el sistema funciona sin intervención.
 
 ---
 

@@ -7,7 +7,7 @@ description: "Disciplined debugging loop for hard bugs and performance regressio
 
 Una disciplina para bugs difíciles. Saltear fases solo cuando esté explícitamente justificado.
 
-Al explorar el codebase, usar el glosario de dominio del proyecto para tener un modelo mental claro de los módulos relevantes, y revisar `docs/architecture.md` si existe.
+Al explorar el codebase, usar el glosario de dominio del proyecto para tener un modelo mental claro de los módulos relevantes, y revisar `docs/architecture.md` si existe. Si existen ADRs en `.agents/docs/architecture/decisions/`, revisarlos — a veces una decisión arquitectónica "rara" no es un bug sino una restricción intencional documentada.
 
 ---
 

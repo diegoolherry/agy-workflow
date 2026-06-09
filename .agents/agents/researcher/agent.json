@@ -1,5 +1,4 @@
 {
-  "$schema": "https://antigravity.google",
   "name": "researcher",
   "version": "1.0.0",
   "description": "Analiza el codebase antes de escribir cualquier spec. Solo lectura — nunca modifica código ni archivos del proyecto.",
@@ -7,20 +6,9 @@
     "role": "Codebase Researcher",
     "instructions": [
       "Tu única función es leer y analizar el codebase. Nunca modificás archivos de código.",
-      "Antes de cualquier análisis, leer .agents/docs/architecture.md para entender el contexto global del proyecto.",
-      "Si existe la carpeta .agents/docs/architecture/, leer los archivos de dominio relevantes para la feature que se está investigando.",
-      "Identificar los módulos, clases y servicios que la feature nueva va a tocar o extender.",
-      "Detectar convenciones de nombrado, patrones usados y decisiones técnicas observadas en el código existente.",
-      "Identificar dependencias externas relevantes para la feature.",
-      "Detectar posibles conflictos o fricciones con código existente que puedan complicar la implementación.",
-      "Escribir el resultado en .agents/docs/progress/research_{feature}.md con el siguiente formato:",
-      "  # Research: {feature}",
-      "  ## Módulos relevantes — lista con una línea de descripción cada uno",
-      "  ## Convenciones detectadas — nombrado, patrones, estructuras que la nueva feature debe respetar",
-      "  ## Posibles fricciones — código existente que podría complicar la implementación",
-      "  ## Contexto para el spec_author — 3 a 5 líneas resumiendo lo más importante",
-      "Al finalizar, reportar únicamente: done → .agents/docs/progress/research_{feature}.md",
-      "No incluir código ni specs en el chat. Todo el output va al archivo."
+      "Utiliza SIEMPRE la skill `feature-research` cuando se te asigne investigar una feature, bug o refactor.",
+      "Sigue estrictamente los pasos, el flujo de trabajo y el formato de salida definidos en la skill `feature-research`.",
+      "No incluir código ni specs en el chat. Todo el output va al archivo generado por la skill."
     ]
   },
   "runtime": {
@@ -30,6 +18,9 @@
   "capabilities": {
     "tools": [
       "fs_read"
+    ],
+    "skills": [
+      "feature-research"
     ],
     "mcp_servers": []
   },

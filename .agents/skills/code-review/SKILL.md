@@ -7,40 +7,23 @@ description: "Revisión de código pre-merge. Analizar el diff contra la rama ba
 
 Revisión estructurada del diff antes de mergear. El objetivo es encontrar bugs que pasan el compilador pero rompen en producción.
 
-Leer `docs/architecture.md` si existe antes de empezar — el contexto de dominio cambia lo que es un bug y lo que es comportamiento correcto.
+Leer `docs/architecture.md` si existe antes de empezar — el contexto de dominio cambia lo que es un bug y lo que es comportamiento correcto. Si existe `.agents/docs/architecture/decisions/`, leer los ADRs relevantes: un finding que viola a propósito un patrón documentado en un ADR es más grave que uno que simplemente es descuidado.
 
 ---
 
-## Paso 1 — Obtener el diff
+## Paso 1 — Obtener contexto
 
-Identificar la rama base (preguntar al usuario si no es obvio: `main`, `develop`, etc.).
+Leer el archivo `.agents/docs/progress/impl/impl_{feature}.md` para identificar la lista de archivos que fueron creados o modificados por el implementador en esta feature.
 
-```bash
-git fetch origin <rama-base> --quiet
-DIFF_BASE=$(git merge-base origin/<rama-base> HEAD)
-git diff "$DIFF_BASE"
-git log origin/<rama-base>..HEAD --oneline
-```
+En lugar de usar ramas remotas o comandos `git diff` complejos, tu objetivo es revisar el código fuente de esos archivos específicos en el entorno local. Esto garantiza que la revisión se concentre estrictamente en lo que se trabajó.
 
-Leer el diff completo antes de emitir cualquier finding. No flaggear issues que ya están resueltos en el propio diff.
-
-Contar líneas cambiadas:
-```bash
-DIFF_INS=$(git diff "$DIFF_BASE" --stat | tail -1 | grep -oE '[0-9]+ insertion' | grep -oE '[0-9]+' || echo "0")
-DIFF_DEL=$(git diff "$DIFF_BASE" --stat | tail -1 | grep -oE '[0-9]+ deletion' | grep -oE '[0-9]+' || echo "0")
-DIFF_TOTAL=$((DIFF_INS + DIFF_DEL))
-echo "Líneas cambiadas: $DIFF_TOTAL"
-```
+Leer el código de esos archivos completamente antes de emitir cualquier finding. No flaggear issues que estén fuera del scope de la feature.
 
 ---
 
 ## Paso 2 — Detección de scope
 
-Antes de revisar, identificar qué tipo de código toca el diff:
-
-```bash
-git diff "$DIFF_BASE" --name-only
-```
+Antes de revisar, basándote en los archivos identificados, determina qué tipo de código se está tocando:
 
 Señales a detectar:
 - **SCOPE_AUTH** — archivos de autenticación, autorización, tokens, sesiones, passwords
@@ -128,27 +111,27 @@ Cada finding sigue este formato:
 
 ## Paso 5 — Reporte final
 
+Agrega (append) al final del archivo `.agents/docs/progress/review/review_{feature}.md` generado previamente por `spec-review`, el resultado de tu análisis de calidad:
+
+```markdown
+
+## 3. Code Review (Calidad y Seguridad)
+**Scope detectado:** [auth] [db] [api] [frontend] [concurrencia]
+
+### Findings Críticos (P1)
+*[Lista o "Ninguno"]*
+
+### Findings Informativos (P2)
+*[Lista o "Ninguno"]*
+
+## Decisión Final
+*Toma en cuenta la "Decisión Preliminar" de spec-review y tu propio análisis.*
+**DICTAMEN:** APROBADO | RECHAZADO
+**Justificación:** *Breve explicación si es rechazado.*
 ```
-CODE REVIEW
-════════════════════════════════════════
-Rama:     <rama actual> → <rama base>
-Diff:     +N / -M líneas
-Scope:    [auth] [db] [api] [frontend] [concurrencia]
 
-## Findings críticos (P1)
-[lista o "Ninguno"]
-
-## Findings informativos (P2)
-[lista o "Ninguno"]
-
-## Apéndice (baja confianza, no bloquean)
-[lista o omitir si está vacío]
-
-────────────────────────────────────────
-Estado:   APROBADO | APROBADO CON OBSERVACIONES | BLOQUEADO
-Score:    N/10
-════════════════════════════════════════
-```
+Al terminar, reporta al usuario únicamente:
+`done → .agents/docs/progress/review/review_{feature}.md`
 
 **Score:** `max(0, 10 - (cant_P1 * 2 + cant_P2 * 0.5))`
 

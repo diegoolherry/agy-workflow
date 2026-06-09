@@ -1,6 +1,6 @@
 ---
 name: architecture-builder
-description: "Usar SIEMPRE al iniciar un proyecto nuevo o cuando no existe docs/architecture.md. También usar cuando task-spec detecta que falta el contexto de arquitectura. Esta skill tiene dos caminos: si el proyecto es nuevo, entrevista al usuario con preguntas adaptativas; si el proyecto ya tiene código, analiza los archivos existentes, extrae lo que puede inferir y solo pregunta lo que no puede deducir del código. Evalúa la complejidad del proyecto y decide si generar un solo archivo o un archivo principal más archivos de dominio en docs/architecture/. Agrega docs/ al .gitignore automáticamente."
+description: "Usar SIEMPRE al iniciar un proyecto nuevo o cuando no existe docs/architecture.md. También usar cuando task-spec detecta que falta el contexto de arquitectura. Esta skill tiene dos caminos: si el proyecto es nuevo, entrevista al usuario con preguntas adaptativas; si el proyecto ya tiene código, analiza los archivos existentes, extrae lo que puede inferir y solo pregunta lo que no puede deducir del código. Evalúa la complejidad del proyecto y decide si generar un solo archivo o un archivo principal más archivos de dominio en docs/architecture/."
 ---
 
 # Architecture Builder
@@ -12,13 +12,12 @@ Genera el contexto de arquitectura para cualquier proyecto. Funciona tanto en pr
 
 **1. Verificar si `docs/architecture.md` ya existe.**
 
-- Si existe → **parar**. Avisar: “Ya existe `docs/architecture.md`. Si querés actualizarlo, modificalo manualmente.” No continuar.
+- Si existe → **parar**. Avisar: “Ya existe `docs/architecture.md`. Si querés actualizarlo, modificálo manualmente.” No continuar.
 - Si no existe → continuar.
 
-**2. Verificar si `docs/` está en `.gitignore`.**
+**2. Verificar si existen ADRs previos.**
 
-- Si no está → agregarlo automáticamente, sin preguntar.
-- Si ya está → continuar.
+Antes de generar arquitectura nueva, revisar si existe la carpeta `.agents/docs/architecture/decisions/` y si contiene archivos. Si los hay, leerlos todos. Las decisiones de arquitectura y seguridad documentadas en ADRs son restricciones fijas — el nuevo documento debe ser coherente con ellas.
 
 -----
 
@@ -123,7 +122,7 @@ Se considera complejo cuando:
 - Cargar las reglas de un dominio para una tarea de otro dominio sería ruido innecesario.
 - La sección de reglas de negocio superaría ~40 líneas en un solo archivo.
 
-→ Generar `docs/architecture.md` con el contexto global y un archivo por dominio en `docs/architecture/`.
+→ Generar `docs/architecture.md` con el contexto global y un archivo por dominio en `.agents/docs/architecture/`.
 
 -----
 
@@ -167,7 +166,7 @@ Se considera complejo cuando:
 
 -----
 
-### Caso complejo — `docs/architecture.md` + `docs/architecture/`
+### Caso complejo — `docs/architecture.md` + `.agents/docs/architecture/`
 
 **`docs/architecture.md`** contiene solo el contexto global:
 
@@ -193,7 +192,7 @@ Se considera complejo cuando:
 
 ## 5. Dominios de negocio
 [lista de dominios con una línea de descripción cada uno]
-[para reglas detalladas de cada dominio, ver docs/architecture/]
+[para reglas detalladas de cada dominio, ver .agents/docs/architecture/]
 
 ## 6. Convenciones de nombrado
 | Elemento | Patrón | Ejemplo |
@@ -206,7 +205,7 @@ Se considera complejo cuando:
 [lista de lo que el modelo NUNCA debe hacer en este proyecto]
 ```
 
-**`docs/architecture/[nombre-dominio].md`** por cada dominio, con este formato:
+**`.agents/docs/architecture/[nombre-dominio].md`** por cada dominio, con este formato:
 
 ```markdown
 # Dominio: [Nombre del dominio]
@@ -232,3 +231,4 @@ Crear todos los archivos directamente. El usuario puede modificarlos después.
 - El contexto generado tiene que ser suficiente para que el modelo, sin conversación previa, entienda el proyecto y no tome decisiones incorrectas.
 - En el Camino B, separar claramente qué fue inferido del código y qué fue respondido por el usuario.
 - Si el proyecto es complejo, indicar al finalizar qué archivos de dominio se crearon y qué contiene cada uno.
+- Los archivos en `.agents/docs/architecture/decisions/` son inmutables para esta skill. Nunca borrarlos ni reemplazarlos.
