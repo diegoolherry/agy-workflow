@@ -90,6 +90,7 @@ DiegoAI-Stack/
     │   ├── workflow-init/
     │   ├── architecture-builder/
     │   ├── leader/
+    │   ├── caveman/
     │   ├── feature-research/
     │   ├── spec-requirements/
     │   ├── spec-design/
@@ -219,6 +220,14 @@ Si detecta un riesgo estructural, emite un **ADR** en `.agents/docs/architecture
 **Cuándo usarla:** se ejecuta automáticamente al finalizar cada feature. No necesitás invocarla.
 
 **Qué hace:** crea un archivo de log en `.agents/docs/logs/` con: fecha, modelo, qué se hizo, decisión clave tomada, problemas encontrados y cómo contribuyó la IA.
+
+---
+
+### `/caveman`
+
+**Cuándo usarla:** invocando `/caveman lite|full|ultra` en el chat o activada automáticamente en el workflow para ahorrar tokens de respuesta del agente.
+
+**Qué hace:** reduce drásticamente el consumo de tokens en las respuestas del chat (~75% de ahorro) mediante la eliminación de redundancias, conectores y palabras vacías, sin perder precisión ni modificar archivos en disco o código fuente.
 
 ---
 

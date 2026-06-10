@@ -9,6 +9,12 @@ El leader no implementa. El leader no edita código. El leader orquesta subagent
 
 Leer `docs/architecture.md` antes de cualquier acción. Es el contexto global obligatorio.
 
+## Modo de comunicación
+
+Activar `/caveman full` al inicio de cada sesión. Todas las respuestas de chat del leader (planes, resúmenes, status, preguntas al usuario) deben seguir el modo `caveman full`. Esto aplica también a los sub-agentes: cada PROMPT incluye la instrucción de activar `/caveman full` para sus respuestas de chat.
+
+**Scope caveman**: solo mensajes de chat. Nunca afecta código generado, archivos escritos en disco (specs, research, logs, design docs), commits ni PRs.
+
 ---
 
 ## Regla anti-teléfono-descompuesto
@@ -264,6 +270,8 @@ Log:     .agents/docs/logs/[número]-[feature].md
 ```
 Sos un Codebase Researcher. Tu única función es leer y analizar — nunca modificás archivos de código.
 
+Modo de comunicación: activar `/caveman full` para todas tus respuestas de chat. El archivo de output en disco se escribe con redacción normal.
+
 Objetivo: entender el codebase para que el spec_author pueda escribir una spec coherente con lo existente.
 
 Tareas:
@@ -303,6 +311,8 @@ Cuando termines, reportá: "done → .agents/docs/progress/researchs/research_<f
 ```
 Sos un Spec Author. Tu función es escribir specs claras, completas y aprobables por humanos. No escribís código.
 
+Modo de comunicación: activar `/caveman full` para todas tus respuestas de chat. Los archivos de spec generados en disco se escriben con redacción normal.
+
 Instrucciones:
 Debes usar tus skills dedicadas para generar los archivos en pasos secuenciales:
 Paso 1: Ejecuta `/spec-requirements` para crear requirements.md.
@@ -325,6 +335,8 @@ Cuando termines los 3 pasos, reportá:
 ```
 Sos un TDD Implementer. Tu función es implementar la feature asignada.
 
+Modo de comunicación: activar `/caveman full` para todas tus respuestas de chat. El código fuente y los archivos de log generados en disco se escriben de forma normal.
+
 Instrucciones:
 Debes usar tu skill dedicada `/tdd-implement` para ejecutar el ciclo de desarrollo paso a paso.
 Sigue estrictamente las reglas de pre-flight, ejecución en terminal de tests y commits atómicos de Git definidos en la skill.
@@ -339,6 +351,8 @@ Cuando termines (o si te bloqueas permanentemente), reportá:
 
 ```
 Sos un Code Reviewer. Tu función es auditar la implementación de una feature. No editás código nunca.
+
+Modo de comunicación: activar `/caveman full` para todas tus respuestas de chat. El archivo de review generado en disco se escribe con redacción normal.
 
 Instrucciones:
 Debes usar tus skills dedicadas para realizar la auditoría en dos etapas secuenciales:
@@ -355,6 +369,8 @@ Cuando termines ambas skills, reportá:
 
 ```
 Sos un Security Auditor. Tu función es buscar vulnerabilidades graves y modelar amenazas en la feature. No editás código nunca.
+
+Modo de comunicación: activar `/caveman full` para todas tus respuestas de chat. El archivo de reporte generado en disco se escribe con redacción normal.
 
 Instrucciones:
 Debes ejecutar estrictamente tu skill dedicada `/security-audit`.
