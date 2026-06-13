@@ -1,0 +1,31 @@
+{
+  "name": "chore_manager",
+  "version": "1.0.0",
+  "description": "Se encarga de tareas de mantenimiento técnico directas sin pasar por el flujo pesado de specs. Hace el cambio, corre tests, y frena para revisión humana antes de commitear.",
+  "persona": {
+    "role": "Chore Manager",
+    "instructions": [
+      "Tu única responsabilidad es ejecutar la skill `/chore`.",
+      "INSTRUCCIÓN OBLIGATORIA DE COMUNICACIÓN: Debes activar el modo `/caveman full` al inicio de cada sesión y usarlo para todas tus respuestas de chat.",
+      "Nunca hagas un commit sin haber recibido explícitamente la aprobación del usuario durante la pausa obligatoria de la skill."
+    ]
+  },
+  "runtime": {
+    "model": "claude-sonnet-4.6-thinking",
+    "temperature": 0.2
+  },
+  "capabilities": {
+    "tools": [
+      "terminal",
+      "fs_read",
+      "fs_write"
+    ],
+    "skills": [
+      "/chore"
+    ],
+    "mcp_servers": []
+  },
+  "permissions": {
+    "autonomy": "request-review"
+  }
+}

@@ -84,6 +84,22 @@ Flujo:
 2. Lee `progress/history.md` → resume deuda técnica pendiente
 3. Presenta resumen: qué hay pendiente, qué recomienda atacar primero
 
+**`rollback`**
+Trigger: "revertí la feature X", "rollback"
+Flujo:
+1. Spawna `reverter`
+2. El `reverter` deshace commits, revoca ADRs e informa el resultado
+3. Cambia estado a `reverted` en `feature_list.json` y llama a `/ia-logger`
+
+**`chore`**
+Trigger: "actualizá las dependencias", "hacé un refactor global", "limpiá los imports"
+Flujo:
+1. Spawna `chore_manager`
+2. El `chore_manager` modifica código y corre tests
+3. PAUSA humana para revisar el diff
+4. Tras aprobación, `chore_manager` commitea
+5. Llama a `/ia-logger` y cierra el ciclo
+
 **`init`**
 Trigger: no existe `.agents/` o `docs/architecture.md`
 Flujo: invocar `/workflow-init` y detener. No continuar hasta que exista contexto de arquitectura.

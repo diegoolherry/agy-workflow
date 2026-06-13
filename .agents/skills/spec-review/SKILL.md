@@ -28,6 +28,9 @@ Antes de empezar, debes haber leído:
 - Por cada criterio de aceptación (Scenario Gherkin) en `requirements.md`, debes identificar el archivo y la línea exacta del test que lo valida.
 - Si un criterio de aceptación no tiene un test verificable, es rechazo automático.
 
+## Paso 4: Métricas de Fricción
+- Como el reviewer puede ser invocado varias veces (si rechaza), determina cuántas pasadas previas han habido revisando si ya existe un reporte `review_{feature}.md`. Incrementa el contador "Intentos de review" en 1 para tu reporte.
+
 ## Salida Esperada
 
 Crea el archivo `.agents/docs/progress/review/review_{feature}.md` (si existe, sobrescríbelo para este nuevo reporte) con el siguiente formato:
@@ -45,6 +48,9 @@ Crea el archivo `.agents/docs/progress/review/review_{feature}.md` (si existe, s
 
 ## Findings de Negocio
 *[Si hay criterios sin cubrir o tasks sin marcar]*
+
+## Métricas
+- **Intentos de review:** *[Número]*
 
 ## Decisión Preliminar (Negocio)
 APROBADO | RECHAZADO — [motivo]

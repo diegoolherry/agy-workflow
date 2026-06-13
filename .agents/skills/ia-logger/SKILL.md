@@ -74,6 +74,11 @@ Omitir esta sección si no hubo ninguno.}
 ## Estado
 [Completado / Completado con pendientes / Bloqueado]
 
+## Métricas
+- **Code Coverage:** {Extraer de impl_<feature>.md si existe}
+- **Uso de /diagnose:** {Extraer de impl_<feature>.md si existe}
+- **Intentos de review:** {Extraer de review_<feature>.md si existe}
+
 ## Pendientes
 {Lista de lo que quedó sin resolver. Omitir esta sección si no hay pendientes.}
 ```
@@ -123,4 +128,9 @@ orden en el pipeline fue identificada por el agente al analizar el error de runt
 
 ## Estado
 Completado
+
+## Métricas
+- **Code Coverage:** 92%
+- **Uso de /diagnose:** No
+- **Intentos de review:** 2
 ```

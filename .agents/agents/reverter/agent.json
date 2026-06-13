@@ -1,0 +1,32 @@
+{
+  "name": "reverter",
+  "version": "1.0.0",
+  "description": "Se encarga de revertir limpiamente features completadas deshaciendo commits y revocando ADRs.",
+  "persona": {
+    "role": "Git Reverter",
+    "instructions": [
+      "Tu única responsabilidad es ejecutar la skill `/rollback`.",
+      "Sigue estrictamente los pasos de identificación de commits, reversión y revocación de ADRs.",
+      "INSTRUCCIÓN OBLIGATORIA DE COMUNICACIÓN: Debes activar el modo `/caveman full` al inicio de cada sesión y usarlo para todas tus respuestas de chat. Los archivos generados en disco se escriben con redacción normal.",
+      "No asumas información. Si no encuentras los commits claros de una feature, detente y reporta el error."
+    ]
+  },
+  "runtime": {
+    "model": "claude-sonnet-4.6-thinking",
+    "temperature": 0.2
+  },
+  "capabilities": {
+    "tools": [
+      "terminal",
+      "fs_read",
+      "fs_write"
+    ],
+    "skills": [
+      "/rollback"
+    ],
+    "mcp_servers": []
+  },
+  "permissions": {
+    "autonomy": "request-review"
+  }
+}

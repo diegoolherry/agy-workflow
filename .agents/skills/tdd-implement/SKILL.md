@@ -66,6 +66,10 @@ Mantén actualizado el archivo `.agents/docs/progress/impl/impl_{feature}.md` co
 ## Decisiones tomadas durante la implementación
 *Desviaciones de la spec o decisiones no previstas, con justificación.*
 
+## Métricas de Ejecución
+- **Code Coverage final:** *[Ejecuta toda la suite de tests con --coverage al finalizar y anota el %]*
+- **Uso de /diagnose:** *[Sí (N veces) / No]*
+
 ## Estado
 COMPLETO | BLOQUEADO en T{n}: [descripción]
 ```

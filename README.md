@@ -403,6 +403,16 @@ Esto permite retomar el trabajo en cualquier momento sin depender de que el mode
 
 ---
 
+## El archivo `GEMINI.md`
+
+Si utilizás **Antigravity IDE** o cualquier entorno basado nativamente en Gemini, el proyecto ya incluye el archivo `GEMINI.md` en la raíz. Este archivo actúa como *system prompt* local para:
+1. Setear al agente por defecto en el rol de `/leader` (orquestador, sin tocar código directamente).
+2. Activar la comunicación `/caveman` para ahorrar tokens en cada interacción.
+
+Al clonar el repositorio, Gemini lo leerá automáticamente al iniciar la sesión.
+
+---
+
 ## Adaptación a Claude Code
 
 La lógica del sistema — el flujo SDD, los roles de los agentes, los ADRs — es 100% portable. Lo que cambia son las convenciones de archivo de cada plataforma.
