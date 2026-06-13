@@ -118,6 +118,8 @@ DiegoAI-Stack/
 
 ```
 tu-proyecto/
+├── AGENTS.md                  → mapa de navegación para agentes
+├── GEMINI.md                  → system prompt para Antigravity
 ├── feature_list.json          → lista de features con su estado
 └── .agents/
     ├── skills/
